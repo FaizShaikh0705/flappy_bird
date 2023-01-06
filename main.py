@@ -1,7 +1,7 @@
-import random 
-import sys
+import random # For generating random numbers
+import sys # We will use sys.exit to exit the program
 import pygame
-from pygame.locals import * 
+from pygame.locals import * # Basic pygame imports
 
 # Global Variables for the game
 FPS = 32
@@ -74,8 +74,28 @@ def mainGame():
     playerFlapAccv = -8 # velocity while flapping
     playerFlapped = False # It is true only when the bird is flapping
 
-
+    day = [10,30,50,70,90,110]
+    night = [20,40,60,80,120]
     while True:
+        if score in day:
+            GAME_SPRITES['background'] = pygame.image.load('gallery/sprites/background-night.png').convert()
+            GAME_SPRITES['player'] = pygame.image.load('gallery/sprites/bluebird-downflap.png').convert_alpha()
+            GAME_SPRITES['pipe'] =(pygame.transform.rotate(pygame.image.load('gallery/sprites/pipe-red.png').convert_alpha(), 180), 
+                pygame.image.load('gallery/sprites/pipe-red.png').convert_alpha()
+                )
+            GAME_SPRITES['mid player'] = pygame.image.load('gallery/sprites/bluebird-midflap.png').convert_alpha()
+            GAME_SPRITES['up player'] = pygame.image.load('gallery/sprites/bluebird-upflap.png').convert_alpha()
+        elif score in night:
+            GAME_SPRITES['background'] = pygame.image.load('gallery/sprites/background-day.png').convert()
+            GAME_SPRITES['player'] = pygame.image.load('gallery/sprites/redbird-downflap.png').convert_alpha()
+            GAME_SPRITES['pipe'] =(pygame.transform.rotate(pygame.image.load('gallery/sprites/pipe-green.png').convert_alpha(), 180), 
+                pygame.image.load('gallery/sprites/pipe-green.png').convert_alpha()
+                )
+            GAME_SPRITES['mid player'] = pygame.image.load('gallery/sprites/redbird-midflap.png').convert_alpha()
+            GAME_SPRITES['up player'] = pygame.image.load('gallery/sprites/redbird-upflap.png').convert_alpha()
+            score2 = 0
+            
+            
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 pygame.quit()
@@ -84,6 +104,12 @@ def mainGame():
                 if playery > 0:
                     playerVelY = playerFlapAccv
                     playerFlapped = True
+                    SCREEN.blit(GAME_SPRITES['mid player'], (playerx, playery))
+                    pygame.display.update()
+                    FPSCLOCK.tick(FPS)
+                    SCREEN.blit(GAME_SPRITES['up player'], (playerx, playery))
+                    pygame.display.update()
+                    FPSCLOCK.tick(FPS)
                     GAME_SOUNDS['wing'].play()
 
 
@@ -97,7 +123,6 @@ def mainGame():
             pipeMidPos = pipe['x'] + GAME_SPRITES['pipe'][0].get_width()/2
             if pipeMidPos<= playerMidPos < pipeMidPos +4:
                 score +=1
-                print(f"Your score is {score}") 
                 GAME_SOUNDS['point'].play()
 
 
@@ -147,18 +172,53 @@ def mainGame():
 
 def isCollide(playerx, playery, upperPipes, lowerPipes):
     if playery> GROUNDY - 25  or playery<0:
+        SCREEN.blit(GAME_SPRITES['background'], (0, 0))
+        SCREEN.blit(GAME_SPRITES['game over'], (60, 200))
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
         GAME_SOUNDS['hit'].play()
+        GAME_SPRITES['background'] = pygame.image.load('gallery/sprites/background-day.png').convert()
+        GAME_SPRITES['player'] = pygame.image.load('gallery/sprites/redbird-downflap.png').convert_alpha()
+        GAME_SPRITES['pipe'] =(pygame.transform.rotate(pygame.image.load('gallery/sprites/pipe-green.png').convert_alpha(), 180), 
+            pygame.image.load('gallery/sprites/pipe-green.png').convert_alpha()
+            )
+        GAME_SPRITES['mid player'] = pygame.image.load('gallery/sprites/redbird-midflap.png').convert_alpha()
+        GAME_SPRITES['up player'] = pygame.image.load('gallery/sprites/redbird-upflap.png').convert_alpha()
         return True
     
     for pipe in upperPipes:
         pipeHeight = GAME_SPRITES['pipe'][0].get_height()
         if(playery < pipeHeight + pipe['y'] and abs(playerx - pipe['x']) < GAME_SPRITES['pipe'][0].get_width()):
             GAME_SOUNDS['hit'].play()
+            SCREEN.blit(GAME_SPRITES['background'], (0, 0))
+            SCREEN.blit(GAME_SPRITES['game over'], (60, 200))
+            pygame.display.update()
+            FPSCLOCK.tick(FPS)
+            GAME_SOUNDS['hit'].play()
+            GAME_SPRITES['background'] = pygame.image.load('gallery/sprites/background-day.png').convert()
+            GAME_SPRITES['player'] = pygame.image.load('gallery/sprites/redbird-downflap.png').convert_alpha()
+            GAME_SPRITES['pipe'] =(pygame.transform.rotate(pygame.image.load('gallery/sprites/pipe-green.png').convert_alpha(), 180), 
+                pygame.image.load('gallery/sprites/pipe-green.png').convert_alpha()
+                )
+            GAME_SPRITES['mid player'] = pygame.image.load('gallery/sprites/redbird-midflap.png').convert_alpha()
+            GAME_SPRITES['up player'] = pygame.image.load('gallery/sprites/redbird-upflap.png').convert_alpha()
             return True
 
     for pipe in lowerPipes:
         if (playery + GAME_SPRITES['player'].get_height() > pipe['y']) and abs(playerx - pipe['x']) < GAME_SPRITES['pipe'][0].get_width():
             GAME_SOUNDS['hit'].play()
+            SCREEN.blit(GAME_SPRITES['background'], (0, 0))
+            SCREEN.blit(GAME_SPRITES['game over'], (60, 200))
+            pygame.display.update()
+            FPSCLOCK.tick(FPS)
+            GAME_SOUNDS['hit'].play()
+            GAME_SPRITES['background'] = pygame.image.load('gallery/sprites/background-day.png').convert()
+            GAME_SPRITES['player'] = pygame.image.load('gallery/sprites/redbird-downflap.png').convert_alpha()
+            GAME_SPRITES['pipe'] =(pygame.transform.rotate(pygame.image.load('gallery/sprites/pipe-green.png').convert_alpha(), 180), 
+                pygame.image.load('gallery/sprites/pipe-green.png').convert_alpha()
+                )
+            GAME_SPRITES['mid player'] = pygame.image.load('gallery/sprites/redbird-midflap.png').convert_alpha()
+            GAME_SPRITES['up player'] = pygame.image.load('gallery/sprites/redbird-upflap.png').convert_alpha()
             return True
 
     return False
@@ -187,7 +247,7 @@ if __name__ == "__main__":
     # This will be the main point from where our game will start
     pygame.init() # Initialize all pygame's modules
     FPSCLOCK = pygame.time.Clock()
-    pygame.display.set_caption('Flappy Bird by CodeWithHarry')
+    pygame.display.set_caption('Flappy Bird')
     GAME_SPRITES['numbers'] = ( 
         pygame.image.load('gallery/sprites/0.png').convert_alpha(),
         pygame.image.load('gallery/sprites/1.png').convert_alpha(),
@@ -206,6 +266,7 @@ if __name__ == "__main__":
     GAME_SPRITES['pipe'] =(pygame.transform.rotate(pygame.image.load( PIPE).convert_alpha(), 180), 
     pygame.image.load(PIPE).convert_alpha()
     )
+    GAME_SPRITES['game over'] = pygame.image.load('gallery/sprites/gameover.png').convert_alpha()
 
     # Game sounds
     GAME_SOUNDS['die'] = pygame.mixer.Sound('gallery/audio/die.wav')
@@ -216,6 +277,8 @@ if __name__ == "__main__":
 
     GAME_SPRITES['background'] = pygame.image.load(BACKGROUND).convert()
     GAME_SPRITES['player'] = pygame.image.load(PLAYER).convert_alpha()
+    GAME_SPRITES['mid player'] = pygame.image.load('gallery/sprites/redbird-midflap.png').convert_alpha()
+    GAME_SPRITES['up player'] = pygame.image.load('gallery/sprites/redbird-upflap.png').convert_alpha()
 
     while True:
         welcomeScreen() # Shows welcome screen to the user until he presses a button
